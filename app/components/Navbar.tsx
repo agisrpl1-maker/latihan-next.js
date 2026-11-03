@@ -11,7 +11,7 @@ const menu = [
 ];
 
 export default function Navbar() {
-    const pathname = usePathname();
+    const pathname =  usePathname();
     return (
         <nav className="flex items-center gap-6 border-b bg-white px-6 py-3">
             <span className="text-lg font-bold text-blur-600">
