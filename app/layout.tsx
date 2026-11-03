@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./components/Navbar";
@@ -14,7 +15,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className="antialiased"
     >
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
-        <Navbar />
+        <Suspense fallback={null}>
+          <Navbar />
+        </Suspense>
         <main className="mx-auto max-w-5xl flex-1 p-6">
           {children}
         </main>
