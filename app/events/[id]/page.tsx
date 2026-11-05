@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { events, rupiah } from "@/data/events";
 import FormPesan from "@/app/components/FormPesan";
 import TombolFavorit from "@/app/components/TombolFavorit";
+import EventTerkait from "@/app/components/EventTerkait";
 
 export function generateStaticParams() {
   return events.map((event) => ({ id: String(event.id) }));
@@ -37,6 +38,8 @@ export default async function Detail({ params }: PageProps<"/events/[id]">) {
 
       <TombolFavorit id={event.id} />
       <FormPesan event={event} />
+
+      <EventTerkait event={event} events={events} />
     </article>
   );
 }

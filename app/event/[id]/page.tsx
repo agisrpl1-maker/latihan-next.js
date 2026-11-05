@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { events, rupiah } from "@/data/events";
 import TombolFavorit from "@/app/components/TombolFavorit";
+import FormPesan from "@/app/components/FormPesan";
+import EventTerkait from "@/app/components/EventTerkait";
 import Link from "next/link";
 
 export function generateStaticParams() {
@@ -35,6 +37,8 @@ export default async function Detail({ params }: PageProps<"/event/[id]">) {
         Sisa {sisa} dari {event.kuota} tiket
       </p>
       <TombolFavorit id={event.id} />
+      <FormPesan event={event} />
+      <EventTerkait event={event} events={events} />
     </article>
   );
 }

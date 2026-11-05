@@ -1,15 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { rupiah, type Event } from "@/data/events";
 
 export default function FormPesan({ event }: { event: Event }) {
   const sisa = event.kuota - event.terisi;
+  const storageKey = `eventku-pesan-${event.id}`;
+
   const [nama, setNama] = useState("");
   const [email, setEmail] = useState("");
   const [jumlah, setJumlah] = useState(1);
   const [pesan, setPesan] = useState("");
   const [berhasil, setBerhasil] = useState(false);
+
+  useEffect(() => {
+    try {
+      const simpan = localStorage.getItem(storageKey);
+      if (!simpan) return;
+
+      const data = JSON.parse(simpan) as {
+        nama?: string;
+        email?: string;
+        jumlah?: number;
+      };
+
+      if (data.nama) setNama(data.nama);
+      if (data.email) setEmail(data.email);
+      if (typeof data.jumlah === "number") setJumlah(data.jumlah);
+      if (data.nama) setBerhasil(true);
+    } catch {
+      // Abaikan data yang rusak.
+    }
+  }, [storageKey]);
 
   function kirim(e: React.FormEvent) {
     e.preventDefault();
@@ -26,6 +48,9 @@ export default function FormPesan({ event }: { event: Event }) {
 
     if (jumlah > sisa)
       return setPesan(`Sisa tiket hanya ${sisa}.`);
+
+    const data = { nama: nama.trim(), email, jumlah };
+    localStorage.setItem(storageKey, JSON.stringify(data));
 
     setPesan("");
     setBerhasil(true);
@@ -74,7 +99,7 @@ export default function FormPesan({ event }: { event: Event }) {
       {berhasil && (
         <p className="text-green-700">
           Terima kasih {nama}! {jumlah} tiket dipesan
-          (belum tersimpan, ini masih latihan).
+          (data tersimpan di browser, ini masih latihan).
         </p>
       )}
 
