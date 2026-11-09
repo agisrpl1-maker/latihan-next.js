@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { events, rupiah } from "@/data/events";
 import FormPesan from "@/app/components/FormPesan";
 import TombolFavorit from "@/app/components/TombolFavorit";
 import EventTerkait from "@/app/components/EventTerkait";
+
+export const instant = false;
 
 export function generateStaticParams() {
   return events.map((event) => ({ id: String(event.id) }));
@@ -14,6 +17,7 @@ export default async function Detail({ params }: PageProps<"/events/[id]">) {
   if (!event) notFound();
 
   const sisa = event.kuota - event.terisi;
+  const namaAwal = (await cookies()).get("nama")?.value ?? "";
   return (
     <article className="rounded-xl border bg-white p-6">
       <span className="rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
@@ -37,7 +41,7 @@ export default async function Detail({ params }: PageProps<"/events/[id]">) {
       </p>
 
       <TombolFavorit id={event.id} />
-      <FormPesan event={event} />
+      <FormPesan event={event} namaAwal={namaAwal} />
 
       <EventTerkait event={event} events={events} />
     </article>
