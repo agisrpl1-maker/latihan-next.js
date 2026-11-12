@@ -1,7 +1,12 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { ambilEvents } from "@/data/ambil";
 import KatalogInteraktif from "@/app/components/KatalogInteraktif";
 import SkeletonKatalog from "@/app/components/SkeletonKatalog";
+
+export const metadata: Metadata = {
+  title: "Katalog Event",
+};
 
 async function DaftarEvent() {
   const events = await ambilEvents();

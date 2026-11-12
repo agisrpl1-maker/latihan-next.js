@@ -1,10 +1,21 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 
+const poppins = localFont({
+  src: [
+    { path: "./fonts/Poppins-Regular.ttf", weight: "400" },
+    { path: "./fonts/Poppins-Bold.ttf", weight: "700" },
+  ],
+});
+
 export const metadata: Metadata = {
-  title: "Eventku",
+  title: {
+    default: "EventKu",
+    template: "%s · EventKu",
+  },
   description: "Katalog dan pemesanan tiket event sekolah",
 };
 
@@ -14,7 +25,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="id"
       className="antialiased"
     >
-      <body className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+      <body
+        className={`${poppins.className} min-h-screen flex flex-col bg-slate-50 text-slate-800`}
+      >
         <Suspense fallback={null}>
           <Navbar />
         </Suspense>
