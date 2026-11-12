@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { events, rupiah } from "@/data/events";
@@ -43,7 +44,16 @@ export default async function Detail({ params }: PageProps<"/events/[id]">) {
       <TombolFavorit id={event.id} />
       <FormPesan event={event} namaAwal={namaAwal} />
 
-      <EventTerkait event={event} events={events} />
+      <section className="mt-6">
+        <h2 className="font-semibold">Event terkait</h2>
+        <Suspense
+          fallback={
+            <p className="text-sm text-slate-500">Memuat event terkait...</p>
+          }
+        >
+          <EventTerkait event={event} />
+        </Suspense>
+      </section>
     </article>
   );
 }

@@ -1,48 +1,49 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
-import { events, rupiah } from "@/data/events";
-import TombolFavorit from "@/app/components/TombolFavorit";
+import { rupiah } from "@/data/events";
+import { ambilEvent } from "@/data/ambil";
 import FormPesan from "@/app/components/FormPesan";
+import TombolFavorit from "@/app/components/TombolFavorit";
 import EventTerkait from "@/app/components/EventTerkait";
-import Link from "next/link";
 
 export const instant = false;
 
-export function generateStaticParams() {
-  return events.map((event) => ({ id: String(event.id) }));
-}
-
 export default async function Detail({ params }: PageProps<"/event/[id]">) {
   const { id } = await params;
-  const event = events.find((e) => e.id === Number(id));
+  const event = await ambilEvent(Number(id));
   if (!event) notFound();
 
   const sisa = event.kuota - event.terisi;
   const namaAwal = (await cookies()).get("nama")?.value ?? "";
+
   return (
     <article className="rounded-xl border bg-white p-6">
-      <div>
-        <Link
-          href="/event"
-          className="mb-4 inline-block rounded border px-3 py-1.5 text-sm hover:bg-slate-100"
-        >
-          ← Kembali ke daftar event
-        </Link>
-      </div>
       <span className="rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
         {event.kategori}
       </span>
       <h1 className="mt-2 text-3xl font-bold">{event.judul}</h1>
       <p className="mt-1 text-slate-500">
-        {event.tanggal} • {event.lokasi}
+        {event.tanggal} · {event.lokasi}
       </p>
       <p className="mt-4 text-xl font-semibold">{rupiah(event.harga)}</p>
       <p className="text-slate-600">
         Sisa {sisa} dari {event.kuota} tiket
       </p>
+
       <TombolFavorit id={event.id} />
       <FormPesan event={event} namaAwal={namaAwal} />
-      <EventTerkait event={event} events={events} />
+
+      <section className="mt-6">
+        <h2 className="font-semibold">Event terkait</h2>
+        <Suspense
+          fallback={
+            <p className="text-sm text-slate-500">Memuat event terkait...</p>
+          }
+        >
+          <EventTerkait event={event} />
+        </Suspense>
+      </section>
     </article>
   );
 }
